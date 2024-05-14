@@ -1,0 +1,52 @@
+get item id
+i_id
+
+place order
+o_date
+ship_address
+c_id
+
+get order id and link
+o_id
+i_id
+qty
+
+inputs
+ship_address
+qty
+
+
+#orders table
+
+title
+author
+genre
+price
+i_type
+
+#view
+qty
+o_date
+ship_address
+total
+
+#fields need to get orders
+
+SELECT I.title, I.author, I.genre, I.price, I.i_type, IO.qty, O.o_date, O.ship_address, (IO.qty * I.price) AS total FROM Items I INNER JOIN ItemsOrdered IO ON I.i_id = IO.i_id INNER JOIN Orders O ON IO.o_id = O.o_id INNER JOIN Customer C ON O.c_id = C.c_id WHERE C.c_id = 1;
+
+
+#adding to cart
+get cart_id (or c_id)
+get i_id
+get qty
+
+
+
+#ordering from cart
+
+
+
+
+
+
+

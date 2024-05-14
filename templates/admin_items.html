@@ -1,0 +1,137 @@
+{% extends 'base_admin.html' %}
+{% block nav %}
+	<a href="{{ url_for('admin_customers') }}" class="w3-bar-item w3-left w3-button">CUSTOMERS</a>
+	<a href="{{ url_for('admin_items') }}" class="w3-bar-item w3-left w3-button" style="font-weight: bold">ITEMS</a>
+{% endblock %}
+{% block content %}
+
+	{% with messages = get_flashed_messages() %}
+		{% if messages %}
+			{% for message in messages %}
+				<div id="flashMessage" class="w3-panel w3-amber w3-container w3-padding" onclick="document.getElementById('flashMessage').style.display='none'">{{ message }}</div>
+			{% endfor %}
+		{% endif %}
+	{% endwith %}
+
+	<div>
+		<button style="display:inline" class="w3-button w3-green" onclick="document.getElementById('addmodal').style.display='block'">+ ADD</button>
+		<form method="post" action="/admin/items/search" style="display:inline" class="w3-right">
+			<input type="text" name="search" id="search" class="w3-input" placeholder="Enter Keyword" style="width:250px;display:inline;">
+			<input type="submit" value="SEARCH" class="w3-button w3-blue">
+		</form>
+	</div>
+	
+	{% if search != None %}
+		<br>
+		<script>
+			document.getElementById('search').value = "{{ search }}";
+		</script>
+		<div class="w3-container" style="padding:0">
+			<button onclick="location.href = '/admin/items'" class="w3-button w3-right w3-red" style="width:95px">CLEAR</button>
+		</div>
+	{% endif %}
+	<br>
+	<table class="w3-table-all w3-card-4 w3-animate-top">
+		<tr>
+			{% for h in header %}
+				<th>{{ h | upper }}</th>
+			{% endfor %}
+		</tr>
+		{% for item in itemlist %}
+			<tr>
+				<td>{{ item['ISBN'] }}</td>
+				<td>{{ item['title'] }}</td>
+				<td>{{ item['author'] }}</td>
+				<td>{{ item['genre'] }}</td>
+				<td>&#x20B1; {{ item['price'] }}</td>
+				<td>{{ item['i_type'] }}</td>
+				<td>
+					<button style="cursor:pointer;border:none" onclick="deleteitem('{{ item['i_id'] }}')">
+						<img width="20px" src="../static/icons/delete.png">
+					</button>
+					<button style="cursor:pointer;border:none" onclick="document.getElementById('updatemodal_{{ item['i_id'] }}').style.display='block'">
+						<img width="20px" src="../static/icons/edit.png">
+					</button>
+				</td>
+				<!-- Update Modal -->
+				<div id="updatemodal_{{ item['i_id'] }}" class="w3-modal">
+				  <div class="w3-modal-content w3-animate-top">
+					<div class="w3-container w3-blue">
+					  <h3>UPDATE ITEM</h3>
+					  <span onclick="document.getElementById('updatemodal_{{ item['i_id'] }}').style.display='none'"
+					  class="w3-button w3-display-topright">&times;</span>
+					</div>
+					
+					<div class="w3-container w3-padding-16">
+						<form method="post" action="/admin/updateitem/{{ item['i_id'] }}">
+
+							<label>ISBN</label>
+							<input type="number" name="isbn" id="isbn" class="w3-input w3-border" value="{{ item['ISBN'] }}">
+							<label>TITLE</label>
+							<input type="text" name="title" id="title" class="w3-input w3-border" value="{{ item['title'] }}">
+							<label>BRAND</label>
+							<input type="text" name="author" id="author" class="w3-input w3-border" value="{{ item['author'] }}">
+							<label>SIZE</label>
+							<input type="text" name="genre" id="genre" class="w3-input w3-border" value="{{ item['genre'] }}">
+							<label>PRICE</label>
+							<input type="number" name="price" id="price" step="any" class="w3-input w3-border" value="{{ item['price'] }}">
+							<label>TYPE</label>
+							<br>
+							<select class="w3-input w3-border" name="type" id="type" data-selected="{{ item['i_type'] }}">
+								<option name="Book" id="Book" value="Motion Control">Motion Control</option>
+								<option name="E-Book" id="E-Book" value="Neutral">Neutral</option>
+								<option name="AudioBook" id="AudioBook" value="Stability">Stability</option>
+							</select>
+							<script>
+								document.querySelectorAll('[data-selected]').forEach(e => {e.value = e.dataset.selected});
+							</script>
+
+							<br>
+							<input type="submit" value="UPDATE" class="w3-button w3-blue w3-right">
+							<br><br>
+
+						</form>
+					</div>
+				  </div>
+				</div>
+			</tr>
+		{% endfor%}
+	</table>
+
+	<!-- Add Modal -->
+	<div id="addmodal" class="w3-modal">
+	  <div class="w3-modal-content w3-animate-top">
+		<div class="w3-container w3-green">
+		  <h3>ADD ITEM</h3>
+		  <span onclick="document.getElementById('addmodal').style.display='none'"
+		  class="w3-button w3-display-topright">&times;</span>
+		</div>
+		<div class="w3-container w3-padding-16">
+			<form method="post" action="/admin/additem">
+			
+				<label>ISBN</label>
+				<input type="number" name="isbn" id="isbn" class="w3-input w3-border">
+				<label>TITLE</label>
+				<input type="text" name="title" id="title" class="w3-input w3-border">
+				<label>BRAND</label>
+				<input type="text" name="author" id="author" class="w3-input w3-border">
+				<label>SIZE</label>
+				<input type="text" name="genre" id="genre" class="w3-input w3-border">
+				<label>PRICE</label>
+				<input type="number" name="price" id="price" step="any" class="w3-input w3-border">
+				<label>TYPE</label>
+				<br>
+				<select class="w3-input w3-border" name="type" id="type">
+					<option value="Motion Control">Motion Control</option>
+					<option value="Neutral">Neutral</option>
+					<option value="Stability">Stability</option>
+				</select>
+				<br>
+				<input type="submit" value="ADD" class="w3-button w3-green w3-right">
+				<br><br>
+
+			</form>
+		</div>
+	  </div>
+	</div>
+{% endblock %}

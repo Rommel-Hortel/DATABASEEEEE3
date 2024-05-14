@@ -1,0 +1,19 @@
+{% extends 'base_user.html' %}
+{% block nav %}
+	<a href="{{ url_for('user_items') }}" class="w3-bar-item w3-left w3-button">ITEMS</a>
+	<a href="{{ url_for('user_orders') }}" class="w3-bar-item w3-left w3-button">ORDERS</a>
+	<a href="{{ url_for('user_cart') }}" class="w3-bar-item w3-left w3-button" style="font-weight: bold">CART</a>
+{% endblock %}
+{% block content %}
+
+	{% with messages = get_flashed_messages() %}
+		{% if messages %}
+			{% for message in messages %}
+				<div id="flashMessage" class="w3-panel w3-amber w3-container w3-padding" onclick="document.getElementById('flashMessage').style.display='none'">{{ message }}</div>
+			{% endfor %}
+		{% endif %}
+	{% endwith %}
+	
+	
+
+{% endblock %}
